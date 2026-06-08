@@ -1,5 +1,7 @@
 import os
 
+import streamlit as st
+
 import requests
 
 from serpapi import GoogleSearch
@@ -9,11 +11,35 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SERP_KEY = os.getenv(
 
-    "SERP_API_KEY"
+SERP_KEY=(
+
+    os.getenv(
+
+        "SERP_API_KEY"
+
+    )
+
+    or
+
+    st.secrets.get(
+
+        "SERP_API_KEY",
+
+        None
+
+    )
 
 )
+
+
+if SERP_KEY is None:
+
+    raise Exception(
+
+        "SERP_API_KEY not found"
+
+    )
 
 
 #####################################################

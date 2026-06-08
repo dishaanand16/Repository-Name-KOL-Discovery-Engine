@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 import json
@@ -8,19 +10,55 @@ from groq import Groq
 
 from dotenv import load_dotenv
 
-import os
 
+############################################
+
+# LOAD ENV
+
+############################################
 
 load_dotenv()
 
 
-client=Groq(
+groq_key=(
 
-    api_key=os.getenv(
+    os.getenv(
 
         "GROQ_API_KEY"
 
     )
+
+    or
+
+    st.secrets.get(
+
+        "GROQ_API_KEY",
+
+        None
+
+    )
+
+)
+
+
+if groq_key is None:
+
+    raise Exception(
+
+        "GROQ_API_KEY not found"
+
+    )
+
+
+############################################
+
+# GROQ CLIENT
+
+############################################
+
+client=Groq(
+
+    api_key=groq_key
 
 )
 
@@ -41,11 +79,7 @@ with open(
 
 ) as f:
 
-    profiles=json.load(
-
-        f
-
-    )
+    profiles=json.load(f)
 
 
 scores=pd.read_csv(
@@ -63,8 +97,6 @@ similarity=pd.read_csv(
 
 )
 
-
-# OPTIONAL
 
 try:
 
@@ -100,12 +132,6 @@ st.title(
 
 )
 
-
-############################################
-
-# SELECT DOCTOR
-
-############################################
 
 doctor=st.selectbox(
 
@@ -184,19 +210,11 @@ f"**Publication Count:** {profile.get('publication_count')}"
 
 ############################################
 
-# CLUSTER
+# CLUSTERS
 
 ############################################
 
 if clusters is not None:
-
-    cluster=clusters[
-
-        clusters["doctor"]
-
-        ==doctor
-
-    ]
 
     st.subheader(
 
@@ -206,14 +224,20 @@ if clusters is not None:
 
     st.dataframe(
 
-        cluster
+        clusters[
+
+            clusters["doctor"]
+
+            ==doctor
+
+        ]
 
     )
 
 
 ############################################
 
-# TOP SIMILAR KOLS
+# SIMILARITY
 
 ############################################
 
@@ -225,15 +249,15 @@ st.header(
 
 top_similar=(
 
-similarity.loc[doctor]
+    similarity.loc[doctor]
 
-.sort_values(
+    .sort_values(
 
-ascending=False
+        ascending=False
 
-)
+    )
 
-[1:4]
+    [1:4]
 
 )
 
@@ -246,7 +270,7 @@ st.dataframe(
 
 ############################################
 
-# INFLUENCE
+# RANKINGS
 
 ############################################
 
@@ -289,7 +313,7 @@ st.dataframe(
 
 ############################################
 
-# PAYMENT SIGNALS
+# PAYMENTS
 
 ############################################
 
@@ -309,31 +333,7 @@ payments=profile.get(
 
 st.write(
 
-f"Payment Records Found: {payments.get('payment_count',0)}"
-
-)
-
-st.write(
-
-f"Total Payment Signal: ${payments.get('total_payment',0)}"
-
-)
-
-st.write(
-
-"Associated Companies:"
-
-)
-
-st.write(
-
-payments.get(
-
-    "companies",
-
-    []
-
-)
+    payments
 
 )
 
@@ -400,7 +400,7 @@ if st.button(
 
     prompt=f"""
 
-Compare these two KOLs.
+Compare these KOLs:
 
 Doctor 1:
 
@@ -410,25 +410,23 @@ Doctor 2:
 
 {json.dumps(p2)}
 
-Provide:
+Give:
 
 1 Expertise overlap
 
-2 Key differences
+2 Major differences
 
 3 Research similarity
 
 4 Influence comparison
 
-5 Short final summary
+5 Summary
 
 """
 
     response=client.chat.completions.create(
 
-        model=
-
-        "llama-3.3-70b-versatile",
+        model="llama-3.3-70b-versatile",
 
         messages=[
 
@@ -440,9 +438,7 @@ Provide:
 
             }
 
-        ],
-
-        temperature=0.2
+        ]
 
     )
 
@@ -463,15 +459,9 @@ Provide:
     )
 
 
-############################################
-
-# EXPANDERS
-
-############################################
-
 with st.expander(
 
-    "View Full JSON"
+    "Full JSON"
 
 ):
 
@@ -484,16 +474,12 @@ with st.expander(
 
 with st.expander(
 
-    "View Similarity Matrix"
+    "Similarity Matrix"
 
 ):
 
     st.dataframe(
 
-        similarity.round(
-
-            2
-
-        )
+        similarity
 
     )
