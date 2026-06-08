@@ -1,0 +1,400 @@
+[
+    {
+        "doctor_name": "Andrew Huberman",
+        "affiliation": "Professor of Neurobiology and Ophthalmology, Stanford",
+        "email": "Verified email at stanford.edu",
+        "specialty": "Neuroscience",
+        "therapy_area": [
+            "Neuroscience",
+            "Ophthalmology"
+        ],
+        "geography": "USA",
+        "citations": 14982,
+        "h_index": 46,
+        "i10_index": 56,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Eric Topol",
+        "affiliation": "Professor and EVP, Scripps Research",
+        "email": "Verified email at scripps.edu",
+        "specialty": "A.I.",
+        "therapy_area": [
+            "A.I.",
+            "genomics",
+            "digital",
+            "individualized medicine"
+        ],
+        "geography": "USA",
+        "citations": 392848,
+        "h_index": 258,
+        "i10_index": 1428,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Atul J. Butte",
+        "affiliation": "Director, Bakar Computational Health Sciences Institute, University of California, San Francisco",
+        "email": "Verified email at ucsf.edu",
+        "specialty": "Electronic Health Records",
+        "therapy_area": [
+            "Electronic Health Records",
+            "Precision Medicine",
+            "Real World Evidence",
+            "Diabetes",
+            "Translational Bioinformatics"
+        ],
+        "geography": "Unknown",
+        "citations": 83803,
+        "h_index": 125,
+        "i10_index": 376,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Deepak L. Bhatt, MD, MPH, MBA",
+        "affiliation": "Dr. Valentin Fuster Professor of Cardiovascular Medicine, Icahn School of Medicine at Mount Sinai",
+        "email": "Verified email at post.harvard.edu",
+        "specialty": "Cardiology",
+        "therapy_area": [
+            "Cardiology"
+        ],
+        "geography": "Unknown",
+        "citations": 307598,
+        "h_index": 214,
+        "i10_index": 1298,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "John P.A. Ioannidis",
+        "affiliation": "Professor of Medicine/Health Research & Policy/Biomedical Data Science/Statistics, Stanford Univ",
+        "email": "Verified email at stanford.edu",
+        "specialty": "meta-research",
+        "therapy_area": [
+            "meta-research",
+            "clinical epidemiology",
+            "evidence-based medicine",
+            "research methods",
+            "meta-analysis"
+        ],
+        "geography": "USA",
+        "citations": 720064,
+        "h_index": 287,
+        "i10_index": 1475,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Peter Attia",
+        "affiliation": "Glimpse",
+        "email": "Verified email at glimp.se",
+        "specialty": "electrochemistry",
+        "therapy_area": [
+            "electrochemistry",
+            "lithium-ion batteries",
+            "machine learning",
+            "computed tomography",
+            "computer vision"
+        ],
+        "geography": "Unknown",
+        "citations": 7166,
+        "h_index": 22,
+        "i10_index": 24,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Ashish K. Jha",
+        "affiliation": "Brown University School of Public Health",
+        "email": "Verified email at brown.edu",
+        "specialty": "Health Policy",
+        "therapy_area": [
+            "Health Policy",
+            "Pandemics"
+        ],
+        "geography": "Unknown",
+        "citations": 56027,
+        "h_index": 115,
+        "i10_index": 370,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Sanjay Gupta",
+        "affiliation": "Case Western Reserve University",
+        "email": "Verified email at case.edu",
+        "specialty": "Cancer Chemoprevention & Therapy",
+        "therapy_area": [
+            "Cancer Chemoprevention & Therapy",
+            "Biomarker Development"
+        ],
+        "geography": "Unknown",
+        "citations": 41202,
+        "h_index": 101,
+        "i10_index": 420,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    },
+    {
+        "doctor_name": "Eric Green",
+        "affiliation": "Trace Neuroscience",
+        "email": "Verified email at traceneuro.com",
+        "specialty": "Translational research",
+        "therapy_area": [
+            "Translational research",
+            "genetics",
+            "cardiology"
+        ],
+        "geography": "Unknown",
+        "citations": 9882,
+        "h_index": 22,
+        "i10_index": 23,
+        "publication_count": 20,
+        "trials": {
+            "trial_count": 0,
+            "trial_ids": []
+        },
+        "payments": {
+            "payment_count": 500,
+            "total_payment": 233862.35,
+            "companies": [
+                "Semler Scientific, Inc.",
+                "VANTAGE TECHNOLOGY LLC",
+                "3M Company",
+                "Edge Endo LLC",
+                "7D Surgical Inc.",
+                "RaySearch Laboratories AB (publ)",
+                "Chrono-log Corp.",
+                "Streck, Inc.",
+                "Asahi Kasei Pharma Corporation",
+                "Surgical Theater LLC"
+            ]
+        },
+        "confidence_scores": {
+            "specialty": 0.95,
+            "therapy_area": 0.9,
+            "geography": 0.9,
+            "citations": 0.95,
+            "payments": 0.9,
+            "trials": 0.3
+        }
+    }
+]

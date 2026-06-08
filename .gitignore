@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+.env
+*.pyc
+outputs/processed/doctor_embeddings.npy
+.ipynb_checkpoints/

@@ -1,0 +1,12 @@
+requests
+pandas
+numpy
+scikit-learn
+sentence-transformers
+matplotlib
+seaborn
+streamlit
+python-dotenv
+tqdm
+google-search-results
+python-dotenv
