@@ -14,52 +14,84 @@ from dotenv import load_dotenv
 # PATHS
 ############################################
 
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
-# For local development only
-if os.path.exists(ROOT_DIR / ".env"):
-    load_dotenv(ROOT_DIR / ".env")
+OUTPUT_DIR = (
 
-OUTPUT_DIR = ROOT_DIR / "outputs" / "processed"
+    ROOT_DIR
+
+    / "outputs"
+
+    / "processed"
+
+)
 
 
 ############################################
-# LOAD ENV / SECRETS
+# LOAD ENV
 ############################################
 
-def get_secret(key):
-    """
-    Get secret from environment or Streamlit secrets.
-    Priority: Streamlit secrets > Environment variables
-    """
-    # Try Streamlit secrets first (for deployed apps)
+env_path = ROOT_DIR / ".env"
+
+if env_path.exists():
+
+    load_dotenv(
+
+        env_path
+
+    )
+
+
+############################################
+# SECRET LOADING
+############################################
+
+def get_secret(
+
+        key
+
+):
+
     try:
-        return st.secrets[key]
-    except (KeyError, FileNotFoundError):
+
+        return st.secrets[
+
+            key
+
+        ]
+
+    except:
+
         pass
-    
-    # Fall back to environment variables (for local development)
-    value = os.getenv(key)
+
+    value=os.getenv(
+
+        key
+
+    )
+
     if value:
+
         return value
-    
+
     return None
 
 
-groq_key = get_secret("GROQ_API_KEY")
+groq_key=get_secret(
 
-if not groq_key:
+    "GROQ_API_KEY"
+
+)
+
+
+if groq_key is None:
+
     st.error(
-        "❌ GROQ_API_KEY not found!\n\n"
-        "**For Local Development:**\n"
-        "1. Create a `.env` file in your project root\n"
-        "2. Add: `GROQ_API_KEY=your_key_here`\n\n"
-        "**For Streamlit Cloud Deployment:**\n"
-        "1. Go to your app settings (⚙️ gear icon)\n"
-        "2. Click 'Secrets (optional)'\n"
-        "3. Add: `GROQ_API_KEY = your_key_here`\n"
-        "4. Deploy"
+
+        "GROQ_API_KEY missing"
+
     )
+
     st.stop()
 
 
@@ -67,7 +99,11 @@ if not groq_key:
 # GROQ CLIENT
 ############################################
 
-client = Groq(api_key=groq_key)
+client=Groq(
+
+    api_key=groq_key
+
+)
 
 
 ############################################
@@ -75,47 +111,95 @@ client = Groq(api_key=groq_key)
 ############################################
 
 try:
+
     with open(
-        OUTPUT_DIR / "doctor_profiles.json",
+
+        OUTPUT_DIR /
+
+        "doctor_profiles.json",
+
         "r",
+
         encoding="utf-8"
+
     ) as f:
-        profiles = json.load(f)
-except FileNotFoundError:
+
+        profiles=json.load(
+
+            f
+
+        )
+
+except Exception as e:
+
     st.error(
-        f"❌ doctor_profiles.json not found at {OUTPUT_DIR}\n\n"
-        "Make sure your data files are in the correct location."
+
+        f"doctor_profiles.json missing: {e}"
+
     )
-    st.stop()
-except json.JSONDecodeError as e:
-    st.error(f"❌ Error reading doctor_profiles.json: {e}")
+
     st.stop()
 
 
 try:
-    scores = pd.read_csv(OUTPUT_DIR / "influence_scores.csv")
-except FileNotFoundError:
-    st.warning("⚠️ influence_scores.csv not found")
-    scores = pd.DataFrame()
+
+    scores=pd.read_csv(
+
+        OUTPUT_DIR /
+
+        "influence_scores.csv"
+
+    )
+
+except:
+
+    scores=pd.DataFrame()
+
 
 try:
-    similarity = pd.read_csv(
-        OUTPUT_DIR / "similarity_matrix.csv",
+
+    similarity=pd.read_csv(
+
+        OUTPUT_DIR /
+
+        "similarity_matrix.csv",
+
         index_col=0
+
     )
-except FileNotFoundError:
-    st.warning("⚠️ similarity_matrix.csv not found")
-    similarity = None
+
+except:
+
+    similarity=None
+
 
 try:
-    clusters = pd.read_csv(OUTPUT_DIR / "clusters.csv")
-except FileNotFoundError:
-    st.warning("⚠️ clusters.csv not found")
-    clusters = None
+
+    clusters=pd.read_csv(
+
+        OUTPUT_DIR /
+
+        "clusters.csv"
+
+    )
+
+except:
+
+    clusters=None
 
 
-doctor_names = [
-    p.get("doctor_name", "Unknown") for p in profiles
+doctor_names=[
+
+    p.get(
+
+        "doctor_name",
+
+        "Unknown"
+
+    )
+
+    for p in profiles
+
 ]
 
 
@@ -123,17 +207,45 @@ doctor_names = [
 # TITLE
 ############################################
 
-st.title("KOL Discovery Engine")
+st.title(
 
-doctor = st.selectbox("Choose Doctor", doctor_names)
+    "KOL Discovery Engine"
 
-profile = next(
-    (p for p in profiles if p.get("doctor_name") == doctor),
-    None
 )
 
+
+doctor=st.selectbox(
+
+    "Choose Doctor",
+
+    doctor_names
+
+)
+
+
+profile=None
+
+for p in profiles:
+
+    if p.get(
+
+        "doctor_name"
+
+    )==doctor:
+
+        profile=p
+
+        break
+
+
 if profile is None:
-    st.error("Profile missing")
+
+    st.error(
+
+        "Profile not found"
+
+    )
+
     st.stop()
 
 
@@ -141,18 +253,41 @@ if profile is None:
 # PROFILE
 ############################################
 
-st.header("Doctor Profile")
-st.json(profile)
+st.header(
+
+    "Doctor Profile"
+
+)
+
+st.json(
+
+    profile
+
+)
 
 
 ############################################
-# CLUSTERS
+# CLUSTER
 ############################################
 
 if clusters is not None:
-    st.subheader("Cluster Assignment")
+
+    st.subheader(
+
+        "Cluster Assignment"
+
+    )
+
     st.dataframe(
-        clusters[clusters["doctor"] == doctor]
+
+        clusters[
+
+            clusters["doctor"]
+
+            ==doctor
+
+        ]
+
     )
 
 
@@ -161,13 +296,42 @@ if clusters is not None:
 ############################################
 
 if similarity is not None:
-    st.header("Most Similar KOLs")
-    top_similar = (
-        similarity
-        .loc[doctor]
-        .sort_values(ascending=False)[1:4]
+
+    st.header(
+
+        "Most Similar KOLs"
+
     )
-    st.dataframe(top_similar)
+
+    try:
+
+        top_similar=(
+
+            similarity
+
+            .loc[doctor]
+
+            .sort_values(
+
+                ascending=False
+
+            )[1:4]
+
+        )
+
+        st.dataframe(
+
+            top_similar
+
+        )
+
+    except:
+
+        st.warning(
+
+            "Similarity unavailable"
+
+        )
 
 
 ############################################
@@ -175,73 +339,234 @@ if similarity is not None:
 ############################################
 
 if not scores.empty:
-    st.header("Influence Ranking")
-    scores = scores.sort_values("influence_score", ascending=False)
-    scores.insert(0, "Rank", range(1, len(scores) + 1))
-    st.dataframe(scores)
+
+    st.header(
+
+        "Influence Ranking"
+
+    )
+
+    scores=scores.sort_values(
+
+        "influence_score",
+
+        ascending=False
+
+    )
+
+    scores.insert(
+
+        0,
+
+        "Rank",
+
+        range(
+
+            1,
+
+            len(scores)+1
+
+        )
+
+    )
+
+    st.dataframe(
+
+        scores
+
+    )
+
+
+############################################
+# PAYMENTS
+############################################
+
+st.header(
+
+    "CMS Payment Signals"
+
+)
+
+st.write(
+
+    profile.get(
+
+        "payments",
+
+        {}
+
+    )
+
+)
 
 
 ############################################
 # COMPARISON
 ############################################
 
-st.header("Compare Two KOLs")
+st.header(
 
-doc1 = st.selectbox("Doctor 1", doctor_names, key="d1")
-doc2 = st.selectbox("Doctor 2", doctor_names, key="d2")
+    "Compare Two KOLs"
+
+)
 
 
-def get_profile(name):
+doc1=st.selectbox(
+
+    "Doctor 1",
+
+    doctor_names,
+
+    key="d1"
+
+)
+
+doc2=st.selectbox(
+
+    "Doctor 2",
+
+    doctor_names,
+
+    key="d2"
+
+)
+
+
+def get_profile(
+
+        name
+
+):
+
     for p in profiles:
-        if p.get("doctor_name") == name:
+
+        if p.get(
+
+            "doctor_name"
+
+        )==name:
+
             return p
 
 
-if st.button("Compare"):
-    p1 = get_profile(doc1)
-    p2 = get_profile(doc2)
+if st.button(
 
-    prompt = f"""
+    "Compare"
+
+):
+
+    p1=get_profile(
+
+        doc1
+
+    )
+
+    p2=get_profile(
+
+        doc2
+
+    )
+
+    prompt=f"""
+
 Compare these KOLs.
 
 Doctor1:
-{json.dumps(p1, indent=2)}
+
+{json.dumps(p1)}
 
 Doctor2:
-{json.dumps(p2, indent=2)}
+
+{json.dumps(p2)}
 
 Provide:
-1. Expertise overlap
-2. Major differences
-3. Research similarity
-4. Influence comparison
-5. Final summary
+
+1 Expertise overlap
+
+2 Major differences
+
+3 Research similarity
+
+4 Influence comparison
+
+5 Final summary
+
 """
 
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+
+        response=client.chat.completions.create(
+
+            model=
+
+            "llama-3.3-70b-versatile",
+
             messages=[
+
                 {
-                    "role": "user",
-                    "content": prompt
+
+                    "role":"user",
+
+                    "content":prompt
+
                 }
+
             ]
+
         )
-        st.subheader("LLM Comparison")
-        st.write(response.choices[0].message.content)
+
+        st.subheader(
+
+            "LLM Comparison"
+
+        )
+
+        st.write(
+
+            response
+
+            .choices[0]
+
+            .message.content
+
+        )
 
     except Exception as e:
-        st.error(f"❌ LLM failed: {e}")
+
+        st.error(
+
+            f"LLM failed: {e}"
+
+        )
 
 
 ############################################
 # EXPANDERS
 ############################################
 
-with st.expander("Full JSON"):
-    st.json(profile)
+with st.expander(
+
+    "Full JSON"
+
+):
+
+    st.json(
+
+        profile
+
+    )
+
 
 if similarity is not None:
-    with st.expander("Similarity Matrix"):
-        st.dataframe(similarity)
+
+    with st.expander(
+
+        "Similarity Matrix"
+
+    ):
+
+        st.dataframe(
+
+            similarity
+
+        )
