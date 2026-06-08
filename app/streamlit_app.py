@@ -1,59 +1,57 @@
 import os
-
-import streamlit as st
-
 import json
 
+import streamlit as st
 import pandas as pd
 
 from groq import Groq
-
 from dotenv import load_dotenv
 
 
 ############################################
-
-# LOAD ENV
-
+# LOAD ENV / SECRETS
 ############################################
 
 load_dotenv()
 
 
-groq_key=(
+def get_secret(key):
 
-    os.getenv(
+    value=os.getenv(key)
 
-        "GROQ_API_KEY"
+    if value:
 
-    )
+        return value
 
-    or
+    try:
 
-    st.secrets.get(
+        return st.secrets[key]
 
-        "GROQ_API_KEY",
+    except:
 
-        None
+        return None
 
-    )
+
+groq_key=get_secret(
+
+    "GROQ_API_KEY"
 
 )
 
 
-if groq_key is None:
+if not groq_key:
 
-    raise Exception(
+    st.error(
 
-        "GROQ_API_KEY not found"
+        "GROQ API key missing. Add it to .env locally or Streamlit secrets."
 
     )
 
+    st.stop()
+
 
 ############################################
-
 # GROQ CLIENT
-
 ############################################
 
 client=Groq(
@@ -64,38 +62,60 @@ client=Groq(
 
 
 ############################################
-
-# LOAD DATA
-
+# LOAD FILES
 ############################################
 
-with open(
+try:
 
-    "outputs/processed/doctor_profiles.json",
+    with open(
 
-    "r",
+        "outputs/processed/doctor_profiles.json",
 
-    encoding="utf-8"
+        "r",
 
-) as f:
+        encoding="utf-8"
 
-    profiles=json.load(f)
+    ) as f:
+
+        profiles=json.load(f)
+
+except Exception as e:
+
+    st.error(
+
+        f"doctor_profiles.json missing: {e}"
+
+    )
+
+    st.stop()
 
 
-scores=pd.read_csv(
+try:
 
-    "outputs/processed/influence_scores.csv"
+    scores=pd.read_csv(
 
-)
+        "outputs/processed/influence_scores.csv"
+
+    )
+
+except:
+
+    scores=pd.DataFrame()
 
 
-similarity=pd.read_csv(
+try:
 
-    "outputs/processed/similarity_matrix.csv",
+    similarity=pd.read_csv(
 
-    index_col=0
+        "outputs/processed/similarity_matrix.csv",
 
-)
+        index_col=0
+
+    )
+
+except:
+
+    similarity=None
 
 
 try:
@@ -113,7 +133,13 @@ except:
 
 doctor_names=[
 
-    p["doctor_name"]
+    p.get(
+
+        "doctor_name",
+
+        "Unknown"
+
+    )
 
     for p in profiles
 
@@ -121,9 +147,7 @@ doctor_names=[
 
 
 ############################################
-
 # TITLE
-
 ############################################
 
 st.title(
@@ -146,17 +170,30 @@ profile=None
 
 for p in profiles:
 
-    if p["doctor_name"]==doctor:
+    if p.get(
+
+        "doctor_name"
+
+    )==doctor:
 
         profile=p
 
         break
 
 
+if profile is None:
+
+    st.error(
+
+        "Profile not found"
+
+    )
+
+    st.stop()
+
+
 ############################################
-
 # PROFILE
-
 ############################################
 
 st.header(
@@ -209,9 +246,7 @@ f"**Publication Count:** {profile.get('publication_count')}"
 
 
 ############################################
-
 # CLUSTERS
-
 ############################################
 
 if clusters is not None:
@@ -236,85 +271,83 @@ if clusters is not None:
 
 
 ############################################
-
 # SIMILARITY
-
 ############################################
 
-st.header(
+if similarity is not None:
 
-    "Most Similar KOLs"
+    st.header(
 
-)
+        "Most Similar KOLs"
 
-top_similar=(
+    )
 
-    similarity.loc[doctor]
+    top_similar=(
 
-    .sort_values(
+        similarity.loc[doctor]
+
+        .sort_values(
+
+            ascending=False
+
+        )
+
+        [1:4]
+
+    )
+
+    st.dataframe(
+
+        top_similar
+
+    )
+
+
+############################################
+# INFLUENCE RANKING
+############################################
+
+if not scores.empty:
+
+    st.header(
+
+        "Influence Ranking"
+
+    )
+
+    scores=scores.sort_values(
+
+        "influence_score",
 
         ascending=False
 
     )
 
-    [1:4]
+    scores.insert(
 
-)
+        0,
 
-st.dataframe(
+        "Rank",
 
-    top_similar
+        range(
 
-)
+            1,
 
+            len(scores)+1
 
-############################################
-
-# RANKINGS
-
-############################################
-
-st.header(
-
-    "Influence Ranking"
-
-)
-
-scores=scores.sort_values(
-
-    "influence_score",
-
-    ascending=False
-
-)
-
-scores.insert(
-
-    0,
-
-    "Rank",
-
-    range(
-
-        1,
-
-        len(scores)+1
+        )
 
     )
 
-)
+    st.dataframe(
 
-st.dataframe(
+        scores
 
-    scores
-
-)
+    )
 
 
 ############################################
-
-# PAYMENTS
-
+# PAYMENT SIGNALS
 ############################################
 
 st.header(
@@ -323,25 +356,21 @@ st.header(
 
 )
 
-payments=profile.get(
-
-    "payments",
-
-    {}
-
-)
-
 st.write(
 
-    payments
+    profile.get(
+
+        "payments",
+
+        {}
+
+    )
 
 )
 
 
 ############################################
-
 # COMPARISON
-
 ############################################
 
 st.header(
@@ -371,11 +400,19 @@ doc2=st.selectbox(
 )
 
 
-def get_profile(name):
+def get_profile(
+
+        name
+
+):
 
     for p in profiles:
 
-        if p["doctor_name"]==name:
+        if p.get(
+
+            "doctor_name"
+
+        )==name:
 
             return p
 
@@ -400,13 +437,13 @@ if st.button(
 
     prompt=f"""
 
-Compare these KOLs:
+Compare these KOLs.
 
-Doctor 1:
+Doctor1:
 
 {json.dumps(p1)}
 
-Doctor 2:
+Doctor2:
 
 {json.dumps(p2)}
 
@@ -424,40 +461,56 @@ Give:
 
 """
 
-    response=client.chat.completions.create(
+    try:
 
-        model="llama-3.3-70b-versatile",
+        response=client.chat.completions.create(
 
-        messages=[
+            model=
 
-            {
+            "llama-3.3-70b-versatile",
 
-                "role":"user",
+            messages=[
 
-                "content":prompt
+                {
 
-            }
+                    "role":"user",
 
-        ]
+                    "content":prompt
 
-    )
+                }
 
-    st.subheader(
+            ]
 
-        "LLM Comparison"
+        )
 
-    )
+        st.subheader(
 
-    st.write(
+            "LLM Comparison"
 
-        response
+        )
 
-        .choices[0]
+        st.write(
 
-        .message.content
+            response
 
-    )
+            .choices[0]
 
+            .message.content
+
+        )
+
+    except Exception as e:
+
+        st.error(
+
+            f"LLM comparison failed: {e}"
+
+        )
+
+
+############################################
+# EXPANDERS
+############################################
 
 with st.expander(
 
@@ -472,14 +525,16 @@ with st.expander(
     )
 
 
-with st.expander(
+if similarity is not None:
 
-    "Similarity Matrix"
+    with st.expander(
 
-):
+        "Similarity Matrix"
 
-    st.dataframe(
+    ):
 
-        similarity
+        st.dataframe(
 
-    )
+            similarity
+
+        )
