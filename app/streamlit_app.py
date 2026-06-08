@@ -1,6 +1,8 @@
 import os
 import json
 
+from pathlib import Path
+
 import streamlit as st
 import pandas as pd
 
@@ -9,15 +11,32 @@ from dotenv import load_dotenv
 
 
 ############################################
+# PATHS
+############################################
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+OUTPUT_DIR = ROOT_DIR / "outputs" / "processed"
+
+
+############################################
 # LOAD ENV / SECRETS
 ############################################
 
-load_dotenv()
+load_dotenv(
+
+    ROOT_DIR / ".env"
+
+)
 
 
 def get_secret(key):
 
-    value=os.getenv(key)
+    value = os.getenv(
+
+        key
+
+    )
 
     if value:
 
@@ -25,14 +44,18 @@ def get_secret(key):
 
     try:
 
-        return st.secrets[key]
+        return st.secrets[
+
+            key
+
+        ]
 
     except:
 
         return None
 
 
-groq_key=get_secret(
+groq_key = get_secret(
 
     "GROQ_API_KEY"
 
@@ -43,7 +66,7 @@ if not groq_key:
 
     st.error(
 
-        "GROQ API key missing. Add it to .env locally or Streamlit secrets."
+        "GROQ API Key missing"
 
     )
 
@@ -54,7 +77,7 @@ if not groq_key:
 # GROQ CLIENT
 ############################################
 
-client=Groq(
+client = Groq(
 
     api_key=groq_key
 
@@ -62,14 +85,16 @@ client=Groq(
 
 
 ############################################
-# LOAD FILES
+# LOAD DATA
 ############################################
 
 try:
 
     with open(
 
-        "outputs/processed/doctor_profiles.json",
+        OUTPUT_DIR /
+
+        "doctor_profiles.json",
 
         "r",
 
@@ -77,7 +102,11 @@ try:
 
     ) as f:
 
-        profiles=json.load(f)
+        profiles = json.load(
+
+            f
+
+        )
 
 except Exception as e:
 
@@ -92,22 +121,26 @@ except Exception as e:
 
 try:
 
-    scores=pd.read_csv(
+    scores = pd.read_csv(
 
-        "outputs/processed/influence_scores.csv"
+        OUTPUT_DIR /
+
+        "influence_scores.csv"
 
     )
 
 except:
 
-    scores=pd.DataFrame()
+    scores = pd.DataFrame()
 
 
 try:
 
-    similarity=pd.read_csv(
+    similarity = pd.read_csv(
 
-        "outputs/processed/similarity_matrix.csv",
+        OUTPUT_DIR /
+
+        "similarity_matrix.csv",
 
         index_col=0
 
@@ -115,23 +148,25 @@ try:
 
 except:
 
-    similarity=None
+    similarity = None
 
 
 try:
 
-    clusters=pd.read_csv(
+    clusters = pd.read_csv(
 
-        "outputs/processed/clusters.csv"
+        OUTPUT_DIR /
+
+        "clusters.csv"
 
     )
 
 except:
 
-    clusters=None
+    clusters = None
 
 
-doctor_names=[
+doctor_names = [
 
     p.get(
 
@@ -157,7 +192,7 @@ st.title(
 )
 
 
-doctor=st.selectbox(
+doctor = st.selectbox(
 
     "Choose Doctor",
 
@@ -166,26 +201,32 @@ doctor=st.selectbox(
 )
 
 
-profile=None
+profile = next(
 
-for p in profiles:
+    (
 
-    if p.get(
+        p
 
-        "doctor_name"
+        for p in profiles
 
-    )==doctor:
+        if p.get(
 
-        profile=p
+            "doctor_name"
 
-        break
+        ) == doctor
+
+    ),
+
+    None
+
+)
 
 
 if profile is None:
 
     st.error(
 
-        "Profile not found"
+        "Profile missing"
 
     )
 
@@ -202,45 +243,9 @@ st.header(
 
 )
 
-st.write(
+st.json(
 
-f"**Name:** {profile.get('doctor_name')}"
-
-)
-
-st.write(
-
-f"**Specialty:** {profile.get('specialty')}"
-
-)
-
-st.write(
-
-f"**Therapy Areas:** {profile.get('therapy_area')}"
-
-)
-
-st.write(
-
-f"**Geography:** {profile.get('geography')}"
-
-)
-
-st.write(
-
-f"**Citations:** {profile.get('citations')}"
-
-)
-
-st.write(
-
-f"**H Index:** {profile.get('h_index')}"
-
-)
-
-st.write(
-
-f"**Publication Count:** {profile.get('publication_count')}"
+    profile
 
 )
 
@@ -263,7 +268,7 @@ if clusters is not None:
 
             clusters["doctor"]
 
-            ==doctor
+            == doctor
 
         ]
 
@@ -284,15 +289,15 @@ if similarity is not None:
 
     top_similar=(
 
-        similarity.loc[doctor]
+        similarity
+
+        .loc[doctor]
 
         .sort_values(
 
             ascending=False
 
-        )
-
-        [1:4]
+        )[1:4]
 
     )
 
@@ -304,7 +309,7 @@ if similarity is not None:
 
 
 ############################################
-# INFLUENCE RANKING
+# INFLUENCE
 ############################################
 
 if not scores.empty:
@@ -347,29 +352,6 @@ if not scores.empty:
 
 
 ############################################
-# PAYMENT SIGNALS
-############################################
-
-st.header(
-
-    "CMS Payment Signals"
-
-)
-
-st.write(
-
-    profile.get(
-
-        "payments",
-
-        {}
-
-    )
-
-)
-
-
-############################################
 # COMPARISON
 ############################################
 
@@ -378,6 +360,7 @@ st.header(
     "Compare Two KOLs"
 
 )
+
 
 doc1=st.selectbox(
 
@@ -388,6 +371,7 @@ doc1=st.selectbox(
     key="d1"
 
 )
+
 
 doc2=st.selectbox(
 
@@ -447,7 +431,7 @@ Doctor2:
 
 {json.dumps(p2)}
 
-Give:
+Provide:
 
 1 Expertise overlap
 
@@ -457,7 +441,7 @@ Give:
 
 4 Influence comparison
 
-5 Summary
+5 Final summary
 
 """
 
@@ -503,7 +487,7 @@ Give:
 
         st.error(
 
-            f"LLM comparison failed: {e}"
+            f"LLM failed: {e}"
 
         )
 
